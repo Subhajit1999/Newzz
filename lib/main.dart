@@ -20,20 +20,54 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: CustomAppBar('Newzz', actionIcon: Icon(CustomIcons.settings), showAction: true,),
-        body: MainScreenBody(),
+      home: Splash()
+    );
+  }
+}
+
+class Splash extends StatefulWidget {
+  @override
+  _SplashState createState() => _SplashState();
+}
+
+class _SplashState extends State<Splash> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(seconds: 3),
+    ()=>Navigator.pushReplacement(context,
+        MaterialPageRoute(builder:
+            (context) =>
+            MainScreen()
+        )
+    ));
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        child: Center(
+          child: Text(
+            'Newzz',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 42.0,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-class MainScreenBody extends StatefulWidget {
+
+class MainScreen extends StatefulWidget {
   @override
-  _MainScreenBodyState createState() => _MainScreenBodyState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenBodyState extends State<MainScreenBody> {
+class _MainScreenState extends State<MainScreen> {
   List<Category> newsCats = List();
   List<Article> newsList = List();
 
@@ -60,96 +94,99 @@ class _MainScreenBodyState extends State<MainScreenBody> {
     newsCats.add(Category(Icon(CustomIcons.tech), 'Science'));
     newsCats.add(Category(Icon(CustomIcons.sports), 'Sports'));
 
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.fromLTRB(30, 30, 30, 0),
-        child:
-        Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Text(
-            'Discover Latest\nNews',
-            style: TextStyle(
-              fontSize: 42,
-              letterSpacing: 1,
-              fontWeight: FontWeight.bold,
+    return Scaffold(
+      appBar: CustomAppBar('Newzz', actionIcon: Icon(CustomIcons.settings), showAction: true,),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+          child:
+          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Text(
+              'Discover Latest\nNews',
+              style: TextStyle(
+                fontSize: 42,
+                letterSpacing: 1,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(0, 36, 0, 0),
-                  padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    shape: BoxShape.rectangle,
-                    color: Colors.grey[200],
-                  ),
-                  child: TextField(
-                    style: TextStyle(
-                      fontSize: 17.0,
-                      fontWeight: FontWeight.w500,
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(0, 36, 0, 0),
+                    padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      shape: BoxShape.rectangle,
+                      color: Colors.grey[200],
                     ),
-                    decoration: InputDecoration(
-                      hintText: 'Search For News',
-                      border: InputBorder.none,
+                    child: TextField(
+                      style: TextStyle(
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Search For News',
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  print('search clicked');
-                },
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  margin: EdgeInsets.fromLTRB(8, 36, 0, 0),
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    shape: BoxShape.rectangle,
-                    color: Colors.red[300],
-                  ),
-                  child: Icon(
-                    Icons.search,
-                    color: Colors.white,
+                GestureDetector(
+                  onTap: () {
+                    print('search clicked');
+                  },
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    margin: EdgeInsets.fromLTRB(8, 36, 0, 0),
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      shape: BoxShape.rectangle,
+                      color: Colors.red[300],
+                    ),
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 36, 0, 48),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: newsCats.map((category) {
+                  return buildCategories(category);
+                }).toList(),
               ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 36, 0, 48),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: newsCats.map((category) {
-                return buildCategories(category);
-              }).toList(),
             ),
-          ),
-          Text(
-            'Popular Headlines',
-            style: TextStyle(
-              fontSize: 24,
-              letterSpacing: 1,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+            Text(
+              'Popular Headlines',
+              style: TextStyle(
+                fontSize: 24,
+                letterSpacing: 1,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          Column(
-            children: newsList.map((news) {
-              return GestureDetector(
-                child: NewsListItem(news),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NewsDetail()),
-                  );
-                },);
-            }).toList()
-            // children: [NewsListItem()],
-          ),
-        ]),
+            Column(
+              children: newsList.map((news) {
+                return GestureDetector(
+                  child: NewsListItem(news),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => NewsDetail(news)),
+                    );
+                  },);
+              }).toList()
+              // children: [NewsListItem()],
+            ),
+          ]),
+        ),
       ),
     );
   }
